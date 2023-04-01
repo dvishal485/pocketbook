@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pocketbook/screens/analysis.dart';
 import 'package:pocketbook/screens/home.dart';
+import 'package:pocketbook/screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const LoginScreen(),
     );
   }
 }

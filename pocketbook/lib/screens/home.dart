@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pocketbook/screens/analysis.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -30,6 +31,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AnalysisScreen(),
+        settings: const RouteSettings(name: 'AnalysisScreen'),
+      ),
+    );
   }
 
   @override
