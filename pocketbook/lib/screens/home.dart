@@ -1,42 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:pocketbook/screens/analysis.dart';
 import 'package:pie_chart/pie_chart.dart';
+//import 'package:pocketbook/models/classification.dart';
 
-Map<String, double> fakedataMap = {
-  "Flutter": 5,
-  "React": 3,
-  "Xamarin": 2,
-  "Ionic": 2,
+final expenditureDivisions = {
+  for (var i = 0; i < 5; i += 1)
+    dataMap[i].category: dataMap[i].averageExpenditure()
 };
 
-class FakePiChart extends StatelessWidget {
-  const FakePiChart({super.key});
+class PiChart extends StatelessWidget {
+  const PiChart({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Card(
-          child: FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 0.5,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AnalysisScreen(),
+                  settings: const RouteSettings(name: 'AnalysisScreen'),
+                ),
+              );
+            },
             child: PieChart(
-              dataMap: fakedataMap,
+              dataMap: expenditureDivisions,
               legendOptions: const LegendOptions(
-                showLegends: false,
+                showLegends: true,
               ),
               chartValuesOptions: const ChartValuesOptions(
-                showChartValues: false,
+                showChartValues: true,
               ),
             ),
           ),
         ),
         const Card(
-          child: SizedBox(
-            width: 300,
-            height: 100,
-            child: Center(child: Text('Recent transactions here')),
-          ),
+          child: Center(child: Text('Recent transactions here')),
         ),
       ],
     );
@@ -74,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FakePiChart(),
+      body: const PiChart(),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'More moni',
