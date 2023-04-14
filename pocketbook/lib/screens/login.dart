@@ -1,215 +1,61 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:pocketbook/screens/home.dart';
-import 'package:pocketbook/screens/registeration.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<StatefulWidget> createState() => _LoginScreen();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  @override
-  void initState() {
-    super.initState();
-    loading = false;
-    _checkIfLoggedIn();
-  }
-
-  final _formKey = GlobalKey<FormState>();
-  String _username = "";
-  String _password = "";
-  bool loading = true;
-
-  Future<void> _login() async {
-    // get_auth_data
-    // getAuthData(_username, _password).then((value) {
-    //   if (value['error'] == 'false') {
-    //     final authData = parseAuthData(value['content']!);
-    //     setState(() {
-    //       loading = false;
-    //     });
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => AuthScreen(authData: authData),
-    //         settings: const RouteSettings(name: 'AuthScreen'),
-    //       ),
-    //     );
-    //   } else {
-    //     setState(() {
-    //       loading = false;
-    //     });
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(
-    //         content: Text(value['content']!),
-    //       ),
-    //     );
-    //   }
-    // });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-            "ummm this isn't implemented yet, so i will allow you to pass"),
-      ),
-    );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MyHomePage(
-          title: 'HomeScreen',
-        ),
-        settings: const RouteSettings(name: 'HomeScreen'),
-      ),
-    );
-    setState(() {
-      loading = false;
-    });
-  }
-
+class _LoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final auth = LocalAuthentication();
+    tryAuthenticate(auth).then((didAuthenticate) {
+      if (didAuthenticate) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MyHomePage(title: APP_TITLE),
+          ),
+        );
+      } else {
+        SystemNavigator.pop();
+      }
+    });
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: // from web
-                        NetworkImage(
-                            "https://i.pinimg.com/originals/94/09/7e/94097e458fbb22184941be57aaab2c8f.png"),
-                    fit: BoxFit.cover)),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.75),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextFormField(
-                        readOnly: loading,
-                        decoration:
-                            const InputDecoration(labelText: 'Username'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            setState(() {
-                              loading = false;
-                            });
-                            return 'Please enter your username';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => _username = value!,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.85),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: TextFormField(
-                        readOnly: loading,
-                        decoration:
-                            const InputDecoration(labelText: 'Password'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            setState(() {
-                              loading = false;
-                            });
-                            return 'Please enter your password';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => _password = value!,
-                        obscureText: true,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ElevatedButton(
-                      style: !loading
-                          ? ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.deepPurpleAccent,
-                            )
-                          : ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.grey,
-                            ),
-                      onPressed: () {
-                        if (loading) {
-                          return;
-                        }
-                        setState(() {
-                          loading = true;
-                        });
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          _login();
-                        }
-                      },
-                      child: const Text('Login'),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()));
-                      },
-                      child: const Text(
-                        "New user? Register here",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 120, 120, 170)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(height: 20),
+            Text("Authenticating..."),
+          ],
+        ),
       ),
     );
   }
 
-  void _checkIfLoggedIn() {
-    SharedPreferences.getInstance().then((prefs) {
-      if (prefs.getBool('hasLoggedIn') ?? false) {
-        // final authData = parseAuthData(prefs.getString('authdata')!);
-        if (!mounted) return;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-              title: 'Homepage',
-            ),
-            settings: const RouteSettings(name: 'AuthScreen'),
-          ),
-        );
+  Future<bool> tryAuthenticate(LocalAuthentication auth) async {
+    // simply try to do device authentication,
+    // if it fails or attempts are exhausted,
+    // just exit the app.
+    try {
+      final didAuthenticate = await auth.authenticate(
+        localizedReason:
+            "We care about data that should be private to you. Please authenticate.",
+        options: const AuthenticationOptions(stickyAuth: true),
+      );
+      return didAuthenticate;
+    } on PlatformException catch (e) {
+      if (kDebugMode) {
+        print(
+            "OOPS! We're running on an unsupported platform (either Android version is too old or we're on Web/Linux)");
+        print(e);
       }
-    });
+      return Future.delayed(const Duration(seconds: 0), () => false);
+    }
   }
 }

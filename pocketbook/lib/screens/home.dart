@@ -8,6 +8,8 @@ final expenditureDivisions = {
     dataMap[i].category: dataMap[i].averageExpenditure()
 };
 
+const APP_TITLE = "PocketBook";
+
 class PiChart extends StatelessWidget {
   const PiChart({super.key});
 
