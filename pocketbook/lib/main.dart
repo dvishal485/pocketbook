@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pocketbook/screens/analysis.dart';
-import 'package:pocketbook/screens/home.dart';
+//import 'package:pocketbook/screens/analysis.dart';
+//import 'package:pocketbook/screens/home.dart';
 import 'package:pocketbook/screens/login.dart';
+//import 'package:isar/isar.dart';
+//import 'package:pocketbook/collections/transaction.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 
