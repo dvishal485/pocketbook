@@ -2,15 +2,30 @@ import 'package:flutter/material.dart';
 //import 'package:pocketbook/screens/analysis.dart';
 //import 'package:pocketbook/screens/home.dart';
 import 'package:pocketbook/screens/login.dart';
-//import 'package:isar/isar.dart';
-//import 'package:pocketbook/collections/transaction.dart';
+import 'package:isar/isar.dart';
+import 'package:pocketbook/collections/transaction.dart';
 
 void main() async {
-  runApp(const MyApp());
+  Isar isar = await Isar.open([TransactionSchema]);
+
+  //trial code to see how database works
+
+  final trytransaction1 = Transaction()
+    ..receiver = 'HDFC'
+    ..amount = 999
+    ..time = '16423';
+
+  isar.writeTxn(() async {
+    await isar.transactions.put(trytransaction1);
+  });
+
+  
+  runApp(MyApp(isar: isar,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Isar isar;
+  const MyApp({super.key, required this.isar});
 
   // This widget is the root of your application.
   @override
@@ -30,7 +45,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      home: LoginScreen(isar: isar,),
     );
   }
 }

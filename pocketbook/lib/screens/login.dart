@@ -3,13 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:pocketbook/screens/home.dart';
+import 'package:isar/isar.dart';
 
 class LoginScreen extends StatefulWidget {
+  final Isar isar;
+
+  LoginScreen({super.key, required this.isar});
+
   @override
-  State<StatefulWidget> createState() => _LoginScreen();
+  State<StatefulWidget> createState() => _LoginScreen(isar: isar);
 }
 
 class _LoginScreen extends State<LoginScreen> {
+  Isar isar;
+
+  _LoginScreen({required this.isar});
+
   @override
   Widget build(BuildContext context) {
     final auth = LocalAuthentication();
@@ -17,7 +26,7 @@ class _LoginScreen extends State<LoginScreen> {
       if (didAuthenticate) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(title: APP_TITLE),
+            builder: (context) => MyHomePage(title: APP_TITLE, isar: isar,),
           ),
         );
       } else {

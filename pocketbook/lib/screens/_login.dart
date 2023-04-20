@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:pocketbook/screens/home.dart';
 import 'package:pocketbook/screens/registeration.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:isar/isar.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Isar isar;
+  const LoginScreen({super.key, required this.isar});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState(isar: isar);
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Isar isar;
+
+  _LoginScreenState({required this.isar});
+
   @override
   void initState() {
     super.initState();
@@ -58,8 +64,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => const MyHomePage(
+        builder: (context) => MyHomePage(
           title: 'HomeScreen',
+          isar: isar,
         ),
         settings: const RouteSettings(name: 'HomeScreen'),
       ),
@@ -203,8 +210,9 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(
+            builder: (context) => MyHomePage(
               title: 'Homepage',
+              isar: isar,
             ),
             settings: const RouteSettings(name: 'AuthScreen'),
           ),

@@ -44,14 +44,19 @@ class PiChart extends StatelessWidget {
 }
 
 class RecentTransactions extends StatefulWidget {
-  const RecentTransactions({super.key});
+  final Isar isar;
+  const RecentTransactions({super.key, required this.isar});
 
   @override
-  State<RecentTransactions> createState() => _RecentTransactionsState();
+  State<RecentTransactions> createState() =>
+      _RecentTransactionsState(isar: isar);
 }
 
 class _RecentTransactionsState extends State<RecentTransactions> {
   List<Transaction>? transactions;
+  Isar isar;
+
+  _RecentTransactionsState({required this.isar});
 
   @override
   void initState() {
@@ -60,18 +65,18 @@ class _RecentTransactionsState extends State<RecentTransactions> {
   }
 
   _readTransactions() async {
-    final isar = await Isar.open([TransactionSchema]);
+    //final isar = await Isar.open([TransactionSchema]);
 
     //trial code to see how database works
 
-    final trytransaction1 = Transaction()
-      ..receiver = 'HDFC'
-      ..amount = 999
-      ..time = '16423';
+    // final trytransaction1 = Transaction()
+    //   ..receiver = 'HDFC'
+    //   ..amount = 999
+    //   ..time = '16423';
 
-    isar.writeTxn(() async {
-      await isar.transactions.put(trytransaction1);
-    });
+    // isar.writeTxn(() async {
+    //   await isar.transactions.put(trytransaction1);
+    // });
 
     final transactionsList = isar.transactions;
     final getTransactions = await transactionsList.where().findAll();
@@ -81,7 +86,7 @@ class _RecentTransactionsState extends State<RecentTransactions> {
   }
 
   List<DataRow> _buildTable() {
-    List<DataRow> rows= [];
+    List<DataRow> rows = [];
     int len = 0;
     //print(transactions);
     if (transactions != null) {
@@ -110,9 +115,8 @@ class _RecentTransactionsState extends State<RecentTransactions> {
     return Card(
       child: Column(
         children: [
-          const Text('Recent Transactions', 
-          style: TextStyle(fontWeight: FontWeight.bold)
-          ),
+          const Text('Recent Transactions',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           DataTable(
             columns: const <DataColumn>[
               DataColumn(
@@ -138,15 +142,20 @@ class _RecentTransactionsState extends State<RecentTransactions> {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.isar});
 
   final String title;
+  final Isar isar;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(isar: isar);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Isar isar;
+
+  _MyHomePageState({required this.isar});
+
   void _incrementCounter() {
     Navigator.push(
       context,
@@ -163,7 +172,8 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView(children: const [PiChart(), RecentTransactions()]),
+      body:
+          ListView(children: [PiChart(), RecentTransactions(isar: isar)]),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'More moni',
